@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Post - My Blog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <style>
+        /* General styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        
+        .container {
+            max-width: 1200px;
+        }
+        
+        /* Header styling */
+        h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            border-radius: 2px;
+        }
+        
+        /* Card styling */
+        .card {
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Form styling */
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #e1e8ed;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+        }
+        
+        textarea.form-control {
+            min-height: 200px;
+            resize: vertical;
+        }
+        
+        /* Button styling */
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .btn-outline-secondary {
+            color: #7f8c8d;
+            border-color: #7f8c8d;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        
+        .btn-outline-secondary:hover {
+            color: #fff;
+            background-color: #7f8c8d;
+            border-color: #7f8c8d;
+        }
+        
+        /* Rich text editor styling */
+        .editor-toolbar {
+            background-color: #f8f9fa;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px 8px 0 0;
+            padding: 10px;
+            margin-bottom: 0;
+        }
+        
+        .editor-toolbar button {
+            background: none;
+            border: none;
+            color: #7f8c8d;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: all 0.2s;
+        }
+        
+        .editor-toolbar button:hover {
+            background-color: #e1e8ed;
+            color: #2c3e50;
+        }
+        
+        /* Tag input styling */
+        .tag-input {
+            display: flex;
+            flex-wrap: wrap;
+            padding: 5px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .tag {
+            background-color: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin: 5px;
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+        
+        .tag i {
+            margin-left: 5px;
+            cursor: pointer;
+        }
+        
+        .tag-input input {
+            flex: 1;
+            border: none;
+            padding: 10px;
+            min-width: 100px;
+        }
+        
+        .tag-input input:focus {
+            outline: none;
+        }
+        
+        /* File upload styling */
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .file-upload-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            color: #3498db;
+            transition: all 0.3s;
+        }
+        
+        .file-upload-label:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+        
+        .file-upload-label i {
+            font-size: 2rem;
+            margin-right: 10px;
+        }
+        
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .file-preview {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .file-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Help text styling */
+        .form-text {
+            color: #7f8c8d;
+            font-size: 0.85rem;
+            margin-top: -15px;
+            margin-bottom: 20px;
+        }
+        
+        /* Category selection */
+        .category-select {
+            margin-bottom: 20px;
+        }
+        
+        /* User info display */
+        .user-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+        
+        .user-avatar-small {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 10px;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .editor-toolbar button span {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        <header class="mb-4">
+            <nav class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <a href="{% url 'base' %}" class="btn btn-outline-primary me-2">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>                    
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="me-3 d-none d-md-block">
+                        <span class="text-muted">Last login: {{ user.last_login|date:"M d, Y H:i" }}</span>
+                    </div>
+                    <a href="{% url 'logout' %}" class="btn btn-outline-danger">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </a>
+                </div>
+            </nav>
+            <h1 class="display-4">Create New Blog Post</h1>
+        </header>
+        
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="POST" enctype="multipart/form-data" action="{% url 'create_product' %}" class="post_form">
+                            {% csrf_token %}
+                            {{ form.as_p }}                            
+                            
+                            <div class="d-flex justify-content-between">
+                                
+                                <button type="submit" name="action" value="publish" class="btn btn-primary">
+                                    <i class="bi bi-send"></i> Publish Post
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar with tips and help -->
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="bi bi-lightbulb"></i> Writing Tips
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i> Use a clear, engaging headline
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i> Include a captivating image
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i> Structure your content with headings
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i> Keep paragraphs short and readable
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle text-success"></i> Add relevant tags to improve visibility
+                            </li>
+                        </ul>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+<script>
+        // Preview uploaded image
+        function previewImage(event) {
+            const preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+            
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        // Tags management
+        const tags = [];
+        
+        function addTag(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                
+                const input = document.getElementById('tagInput');
+                const value = input.value.trim();
+                
+                if (value && !tags.includes(value)) {
+                    tags.push(value);
+                    
+                    const tagElement = document.createElement('span');
+                    tagElement.className = 'tag';
+                    tagElement.innerHTML = value + ' <i class="bi bi-x-circle" onclick="removeTag(this, \'' + value + '\')"></i>';
+                    
+                    const container = document.getElementById('tagContainer');
+                    container.insertBefore(tagElement, input);
+                    
+                    updateHiddenTagsField();
+                }
+                
+                input.value = '';
+            }
+        }
+        
+        function removeTag(element, value) {
+            const index = tags.indexOf(value);
+            if (index !== -1) {
+                tags.splice(index, 1);
+                element.parentNode.remove();
+                updateHiddenTagsField();
+            }
+        }
+        
+        function updateHiddenTagsField() {
+            document.getElementById('tags').value = tags.join(',');
+        }
+        
+        // Simple text formatting
+        function formatText(command) {
+            const textarea = document.getElementById('content');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selectedText = textarea.value.substring(start, end);
+            let formattedText = '';
+            
+            switch(command) {
+                case 'bold':
+                    formattedText = '**' + selectedText + '**';
+                    break;
+                case 'italic':
+                    formattedText = '*' + selectedText + '*';
+                    break;
+                case 'underline':
+                    formattedText = '<u>' + selectedText + '</u>';
+                    break;
+                case 'heading':
+                    formattedText = '## ' + selectedText;
+                    break;
+                case 'list':
+                    formattedText = '- ' + selectedText.replace(/\n/g, '\n- ');
+                    break;
+                case 'link':
+                    const url = prompt('Enter URL:', 'https://');
+                    if (url) {
+                        formattedText = '[' + (selectedText || 'Link text') + '](' + url + ')';
+                    } else {
+                        return;
+                    }
+                    break;
+                case 'quote':
+                    formattedText = '> ' + selectedText.replace(/\n/g, '\n> ');
+                    break;
+            }
+            
+            // Insert the formatted text
+            textarea.value = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+            
+            // Set the cursor position after the inserted text
+            textarea.selectionStart = start + formattedText.length;
+            textarea.selectionEnd = start + formattedText.length;
+            textarea.focus();
+        }
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

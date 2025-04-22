@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <style>
+        /* General styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+        }
+        
+        .container {
+            max-width: 1200px;
+        }
+        
+        /* Header styling */
+        h1 {
+            color: #2c3e50;
+            font-weight: 700;
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        h1:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+            border-radius: 2px;
+        }
+        
+        /* Card styling */
+        .card {
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 12px;
+        }
+        
+        .card-text {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        /* Image styling */
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .card:hover .card-img-top {
+            transform: scale(1.03);
+        }
+        
+        /* Button styling */
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        
+        .btn-danger {
+            background-color: #e74c3c;
+            border-color: #e74c3c;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+            border-color: #c0392b;
+        }
+        
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .action-buttons .btn {
+            flex: 1;
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        
+        /* Timestamps styling */
+        .text-muted {
+            font-size: 0.8rem;
+            margin-top: 12px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        
+        /* Edit mode styling */
+        .edit-form {
+            display: none;
+            padding: 15px;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+        
+        .edit-form.active {
+            display: block;
+        }
+        
+        .form-control:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 0.25rem rgba(52, 152, 219, 0.25);
+        }
+        
+        /* Toast notifications */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+        }
+        
+        /* Modal customization */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .modal-header {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .modal-footer {
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .card-img-top {
+                height: 180px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        .description-preview {
+            min-height: 80px;  /* Adjust based on your design */
+            max-height: 80px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-5">
+        
+        <!-- Logged-in view -->
+        <header class="mb-4">
+            <nav class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <a href="{% url 'create_product' %}" class="btn btn-success me-2">
+                        <i class="bi bi-plus-circle"></i> Create Post
+                    </a>
+                </div>
+                <a href="{% url 'logout' %}" class="btn btn-outline-danger">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+            </nav>
+            <h1 class="display-4">My Blog Dashboard</h1>
+        </header>
+        
+        <div class="row">
+            {% for product in dbitem %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100" id="product-card-{{ product.id }}">
+                    {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                    <div class="bg-light text-center py-5">
+                        <i class="bi bi-image text-secondary" style="font-size: 3rem;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body">
+                        <!-- Display mode content -->
+                        <div class="view-mode" id="view-mode-{{ product.id }}">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            
+                            <p class="card-text description-preview">
+                                {% if product.short_description|length > 100 %}
+                                    {{ product.short_description|slice:":100" }}...
+                                {% else %}
+                                    {{ product.short_description }}
+                                {% endif %}
+                            </p>
+                            <div class="text-muted">
+                               <B> Category: {{ product.category }}</B><br>
+                                <small class="d-block">Created: {{ product.created_at }}</small>
+                                <small>Updated: {{ product.updated_at }}</small>
+                            </div>
+                            <div class="action-buttons">
+                                    <button class="btn btn-primary view-product-btn" 
+                                        data-id="{{ product.id }}" 
+                                        data-name="{{ product.name }}" 
+                                        data-description="{{ product.short_description }}">
+                                    <i class="bi bi-eye"></i> View
+                                </button>
+                                <button class="btn btn-warning edit-toggle" data-id="{{ product.id }}">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ product.id }}">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Edit mode form -->
+                        <div class="edit-form" id="edit-form-{{ product.id }}">
+                            <form method="POST" action="{% url 'update' product.id %}" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="name-{{ product.id }}" class="form-label">Title</label>
+                                    <input type="text" class="form-control" id="name-{{ product.id }}" name="name" value="{{ product.name }}" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description-{{ product.id }}" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description-{{ product.id }}" name="short_description" rows="3" required>{{ product.short_description }}</textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="image-{{ product.id }}" class="form-label">Image</label>
+                                    <input type="file" class="form-control" id="image-{{ product.id }}" name="image">
+                                    <small class="text-muted">Leave empty to keep current image</small>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary flex-grow-1">
+                                        <i class="bi bi-check-circle"></i> Save Changes
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary flex-grow-1 edit-cancel" data-id="{{ product.id }}">
+                                        <i class="bi bi-x-circle"></i> Cancel
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Delete confirmation modal -->
+                <div class="modal fade" id="deleteModal-{{ product.id }}" tabindex="-1" aria-labelledby="deleteModalLabel-{{ product.id }}" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="deleteModalLabel-{{ product.id }}">Confirm Delete</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to delete "<strong>{{ product.name }}</strong>"?</p>
+                                <p class="text-danger"><i class="bi bi-exclamation-triangle"></i> This action cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                <form method="POST" action="{% url 'delete' product.id %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i> Delete Permanently
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="display-6 text-muted">
+                    <i class="bi bi-journal-x mb-3" style="font-size: 3rem;"></i>
+                    <p>No blog posts yet</p>
+                    <a href="{% url 'create_product' %}" class="btn btn-lg btn-primary mt-3">
+                        <i class="bi bi-plus-circle"></i> Create Your First Post
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+<div class="modal fade" id="productDescriptionModal" tabindex="-1" aria-labelledby="productDescriptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-product-name"></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-product-description"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" id="modal-product-link" data-bs-dismiss="modal" >Close</button>
+                
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+    <div class="toast-container"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {           
+            const editButtons = document.querySelectorAll('.edit-toggle');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    const viewMode = document.getElementById(`view-mode-${productId}`);
+                    const editForm = document.getElementById(`edit-form-${productId}`);
+                    
+                    viewMode.style.display = 'none';
+                    editForm.classList.add('active');
+                });
+            });
+            
+            const cancelButtons = document.querySelectorAll('.edit-cancel');
+            cancelButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const productId = this.getAttribute('data-id');
+                    const viewMode = document.getElementById(`view-mode-${productId}`);
+                    const editForm = document.getElementById(`edit-form-${productId}`);
+                    
+                    viewMode.style.display = 'block';
+                    editForm.classList.remove('active');
+                });
+            });
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('success')) {
+                const message = urlParams.get('message') || 'Operation completed successfully!';
+                showToast(message, 'success');
+            }
+            if (urlParams.has('error')) {
+                const message = urlParams.get('error') || 'An error occurred!';
+                showToast(message, 'danger');
+            }
+        });
+        
+        function showToast(message, type) {
+            const toastContainer = document.querySelector('.toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast show bg-${type} text-white`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="toast-header bg-${type} text-white">
+                    <strong class="me-auto">Notification</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body">
+                    ${message}
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            setTimeout(() => {
+                const bsToast = new bootstrap.Toast(toast);
+                bsToast.hide();
+            }, 5000);
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+    // Get all view buttons
+    const viewButtons = document.querySelectorAll('.view-product-btn');
+    
+    // Get modal elements
+    const productModal = new bootstrap.Modal(document.getElementById('productDescriptionModal'));
+    const modalTitle = document.getElementById('modal-product-name');
+    const modalDescription = document.getElementById('modal-product-description');
+    const modalLink = document.getElementById('modal-product-link');
+    
+    // Add click event to each button
+    viewButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Get data from button attributes
+            const productId = this.getAttribute('data-id');
+            const productName = this.getAttribute('data-name');
+            const productDescription = this.getAttribute('data-description');
+            
+            // Set modal content
+            modalTitle.textContent = productName;
+            modalDescription.textContent = productDescription;
+            modalLink.href = `/products/${productId}/`; // Adjust URL as needed
+            
+            // Show modal
+            productModal.show();
+        });
+    });
+});
+    </script>
+</body>
+</html>
