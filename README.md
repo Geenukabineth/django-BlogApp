@@ -14,15 +14,15 @@ A simple and elegant Blog Application where users can create, edit, and delete b
 ## 🛠️ Tech Stack
 
 - **Frontend:** HTML, CSS, JavaScript (or React/Vue if applicable)
-- **Backend:** Node.js / Django / Flask / PHP / Laravel *(customize based on your tech stack)*
-- **Database:** MongoDB / MySQL / PostgreSQL / SQLite
-- **Authentication:** JWT / Sessions
-- **Others:** Bootstrap / Tailwind CSS / Axios / REST API
+- **Backend:**  Django 
+- **Database:** SQLite
+- **Authentication:** JWT 
+- **Others:**  REST API
 
-## 📦 Installation
+🖼️ Screenshots
 
-1. **Clone the repo:**
+<img width="887" alt="Capture1" src="https://github.com/user-attachments/assets/379dd5db-4bd6-44e7-a19c-7429a6c0cecc" />
 
-   ```bash
-   git clone https://github.com/your-username/blog-app.git
-   cd blog-app
+
+
+   
