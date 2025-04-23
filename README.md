@@ -9,11 +9,11 @@ A simple and elegant Blog Application where users can create, edit, and delete b
 - 🗂️ Categorize and tag posts
 - 💬 Comment on blog posts
 - 📱 Responsive design (mobile-friendly)
-- 🕵️ Admin dashboard (optional)
+- 🕵️ Admin dashboard 
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** HTML, CSS, JavaScript (or React/Vue if applicable)
+- **Frontend:** HTML, CSS, JavaScript 
 - **Backend:**  Django 
 - **Database:** SQLite
 - **Authentication:** JWT 
